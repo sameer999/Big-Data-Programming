@@ -1,0 +1,56 @@
+Petrol Data:
+
+1. create table petrol (distributer_id STRING,distributer_name STRING,amt_IN STRING,amt_OUT STRING,vol_IN INT,vol_OUT INT,year INT) row format delimited fields terminated by ',' stored as textfile;
+load data local inpath '/home/cloudera/Downloads/Dataset/petrol.txt' into table petrol;
+
+2. total volume of petrol sold by every distributor
+SELECT distributer_name,SUM(vol_OUT) FROM petrol GROUP BY distributer_name;
+
+3. top 10 distributors ID’s who sells petrol and displaying petrol volume sold by them individually
+SELECT distributer_id,vol_OUT FROM petrol order by vol_OUT desc limit 10;
+
+4. 10 distributor name who sell petrol in the less volume.
+SELECT distributer_id,vol_OUT FROM petrol order by vol_OUT limit 10;
+
+5. Display distributors along with year who have this difference.
+SELECT distributer_id,year,(vol_IN-vol_OUT) FROM petrol where (vol_IN-vol_OUT)>500;
+
+
+
+Olympics Data:
+
+1. create table olympic (athelete STRING,age INT,country STRING,year STRING,closing STRING,sport STRING,gold INT,silver INT,bronze INT,total INT) row format delimited fields terminated by '\t' stored as textfile;
+load data local inpath '/home/cloudera/Downloads/Dataset/olympic_data.csv' into table olympic;
+
+2. total number of swimming medals won by each country.
+select country,SUM(total) from olympic where sport = "Swimming" GROUP BY country;
+
+3. number of medals India won in each year.
+select year,SUM(total) from olympic where country = "India" GROUP BY year;
+
+4. number of medals each country won.
+select country,SUM(total) from olympic GROUP BY country;
+
+5. number of gold medals each country won.
+select country,SUM(gold) from olympic GROUP BY country;
+
+6. number of shooting medals each country got, year wise classification?
+select country,SUM(total),year from olympic where sport = "Shooting" GROUP BY country,year;
+
+
+
+Hive Inner Joins- Bonus:
+
+1. create table new_table (distributer_id STRING,distributer_name STRING,amt_IN STRING,amt_OUT STRING);
+
+2. INSERT INTO new_table(distributer_id,distributer_name,amt_in,amt_out) SELECT distributer_id,distributer_name,amt_in,amt_out FROM petrol;
+
+3. create table new_petrol (distributer_id STRING,vol_IN INT,vol_OUT INT,year INT);
+
+4. INSERT INTO new_petrol(distributer_id,vol_IN,vol_OUT,year) SELECT distributer_id,vol_IN,vol_OUT,year FROM petrol;
+
+Using Inner Join,
+
+5. select distinct t1.distributer_id,t1.distributer_name,t1.amt_in,t1.amt_out,t2.vol_in,t2.vol_out,t2.year FROM new_table t1 JOIN new_petrol t2;
+
+6. select distinct t1.distributer_id,t1.distributer_name,t1.amt_in,t1.amt_out,t2.vol_in,t2.vol_out,t2.year FROM new_table t1 JOIN new_petrol t2 ON(t1.distributer_name="reliance");
