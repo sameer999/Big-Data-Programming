@@ -1,0 +1,6 @@
+val,x,5,9
+val,y,5,5
+val,x,1,2
+val,y,1,7
+val,y,2,1
+val,x,2,6
